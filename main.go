@@ -196,11 +196,11 @@ func main() {
 	// set tinyint type
 	dataMap := map[string]func(detailType string) (dataType string){
 		"tinyint": func(detailType string) (dataType string) {
-			dataType = "int8"
-			if strings.Contains(detailType, "unsigned") {
-				dataType = "uint8"
-			}
-			return
+			// dataType = "int8"
+			// if strings.Contains(detailType, "unsigned") {
+			// 	dataType = "uint8"
+			// }
+			return "int8"
 		},
 	}
 	g.WithDataTypeMap(dataMap)
