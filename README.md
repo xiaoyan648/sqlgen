@@ -3,7 +3,7 @@
 
 
 # 安装
-go install gorm.io/gen/tools/gentool@latest
+go install github.com/go-leo/sqlgen@latest
 
 # 使用
 gentool -h
