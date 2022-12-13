@@ -26,6 +26,7 @@ Usage of gentool:
        query code file name, default: gen.go
  -outPath string
        specify a directory for output (default "./dao/query")
+ -
  -tables string
        enter the required data table or leave it blank
  -onlyModel

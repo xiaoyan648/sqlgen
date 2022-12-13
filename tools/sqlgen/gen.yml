@@ -14,6 +14,10 @@ database:
   outPath :  "./dao/query"
   # query code file name, default: gen.go
   outFile :  ""
+  # dynamic sql file path
+  dynamicSQLPath: ""
+  # dynamic sql interface name, default: Querier
+  dynamicInterfaceName: ""
   # generate unit test for query code
   withUnitTest  : false
   # generated model code's package name
