@@ -337,7 +337,7 @@ func (g *Generator) generateQueryFile() (err error) {
 	if err != nil {
 		return err
 	}
-	g.info("generate query file: " + g.OutFile + "   " + string(buf.Bytes()))
+	g.info("generate query file: " + g.OutFile)
 
 	// generate query unit test file
 	if g.WithUnitTest {
