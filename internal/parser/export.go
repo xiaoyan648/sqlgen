@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"encoding/json"
 	"fmt"
 	"go/build"
 	"log"
@@ -108,8 +107,6 @@ func parsePackage(srcLocaltion, fileName string) (paths []*InterfacePath) {
 			Files:    pkg.GoFiles,
 			// Package:  pkg.PkgPath,
 		})
-		data, _ := json.Marshal(pkg)
-		fmt.Printf("%+v", string(data))
 	}
 
 	return
