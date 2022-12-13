@@ -1,40 +1,37 @@
-# sqlgen
-通过sql 生成 数据裤操作接口
+# GORM Gen
 
+Friendly & Safer GORM powered by Code Generation.
 
-# 安装
-go install github.com/go-leo/sqlgen@latest
+[![Release](https://img.shields.io/github/v/release/go-gorm/gen)](https://github.com/go-gorm/gen/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-gorm/gen)](https://goreportcard.com/report/github.com/go-gorm/gen)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![OpenIssue](https://img.shields.io/github/issues/go-gorm/gen)](https://github.com/go-gorm/gen/issues?q=is%3Aopen+is%3Aissue)
+[![ClosedIssue](https://img.shields.io/github/issues-closed/go-gorm/gen)](https://github.com/go-gorm/gen/issues?q=is%3Aissue+is%3Aclosed)
+[![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/go-gorm/gen)](https://www.tickgit.com/browse?repo=github.com/go-gorm/gen)
+[![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/gorm.io/gen?tab=doc)
 
-# 使用
-gentool -h
+## Overview
 
-Usage of gentool:
- -db string
-       input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html] (default "mysql")
- -dsn string
-       consult[https://gorm.io/docs/connecting_to_the_database.html]
- -fieldNullable
-       generate with pointer when field is nullable
- -fieldWithIndexTag
-       generate field with gorm index tag
- -fieldWithTypeTag
-       generate field with gorm column type tag
- -modelPkgName string
-       generated model code's package name
- -outFile string
-       query code file name, default: gen.go
- -outPath string
-       specify a directory for output (default "./dao/query")
- -tables string
-       enter the required data table or leave it blank
- -onlyModel
-       only generate models (without query file)
- -withUnitTest
-       generate unit test for query code
- -fieldSignable
-       detect integer field's unsigned type, adjust generated data type
+- Idiomatic & Reusable API from Dynamic Raw SQL
+- 100% Type-safe DAO API without `interface{}`
+- Database To Struct follows GORM conventions
+- GORM under the hood, supports all features, plugins, DBMS that GORM supports
 
-参考
-- https://github.com/go-gorm/gen
-- https://github.com/anqiansong/sqlgen
-- https://goframe.org/pages/viewpage.action?pageId=7296196
+## Getting Started
+
+* Gen Guides [https://gorm.io/gen/index.html](https://gorm.io/gen/index.html)
+* GORM Guides [http://gorm.io/docs](http://gorm.io/docs)
+
+## Maintainers
+
+[@riverchu](https://github.com/riverchu) [@iDer](https://github.com/idersec) [@qqxhb](https://github.com/qqxhb) [@dino-ma](https://github.com/dino-ma)
+
+[@jinzhu](https://github.com/jinzhu)
+
+## Contributing
+
+[You can help to deliver a better GORM/Gen, check out things you can do](https://gorm.io/contribute.html)
+
+## License
+
+Released under the [MIT License](https://github.com/go-gorm/gen/blob/master/License)

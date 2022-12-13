@@ -7,12 +7,12 @@ import (
 	"os"
 	"strings"
 
+	gen "github.com/go-leo/sqlgen"
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
-	"gorm.io/gen"
 	"gorm.io/gorm"
 )
 
@@ -33,18 +33,20 @@ const (
 
 // CmdParams is command line parameters
 type CmdParams struct {
-	DSN               string   `yaml:"dsn"`               // consult[https://gorm.io/docs/connecting_to_the_database.html]"
-	DB                string   `yaml:"db"`                // input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html]
-	Tables            []string `yaml:"tables"`            // enter the required data table or leave it blank
-	OnlyModel         bool     `yaml:"onlyModel"`         // only generate model
-	OutPath           string   `yaml:"outPath"`           // specify a directory for output
-	OutFile           string   `yaml:"outFile"`           // query code file name, default: gen.go
-	WithUnitTest      bool     `yaml:"withUnitTest"`      // generate unit test for query code
-	ModelPkgName      string   `yaml:"modelPkgName"`      // generated model code's package name
-	FieldNullable     bool     `yaml:"fieldNullable"`     // generate with pointer when field is nullable
-	FieldWithIndexTag bool     `yaml:"fieldWithIndexTag"` // generate field with gorm index tag
-	FieldWithTypeTag  bool     `yaml:"fieldWithTypeTag"`  // generate field with gorm column type tag
-	FieldSignable     bool     `yaml:"fieldSignable"`     // detect integer field's unsigned type, adjust generated data type
+	DSN                  string   `yaml:"dsn"`                  // consult[https://gorm.io/docs/connecting_to_the_database.html]"
+	DB                   string   `yaml:"db"`                   // input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html]
+	Tables               []string `yaml:"tables"`               // enter the required data table or leave it blank
+	OnlyModel            bool     `yaml:"onlyModel"`            // only generate model
+	OutPath              string   `yaml:"outPath"`              // specify a directory for output
+	OutFile              string   `yaml:"outFile"`              // query code file name, default: gen.go
+	WithUnitTest         bool     `yaml:"withUnitTest"`         // generate unit test for query code
+	ModelPkgName         string   `yaml:"modelPkgName"`         // generated model code's package name
+	FieldNullable        bool     `yaml:"fieldNullable"`        // generate with pointer when field is nullable
+	FieldWithIndexTag    bool     `yaml:"fieldWithIndexTag"`    // generate field with gorm index tag
+	FieldWithTypeTag     bool     `yaml:"fieldWithTypeTag"`     // generate field with gorm column type tag
+	FieldSignable        bool     `yaml:"fieldSignable"`        // detect integer field's unsigned type, adjust generated data type
+	DynamicInterfaceName string   `yaml:"dynamicInterfaceName"` // dynamic sql interface name
+	DynamicSQLPath       string   `yaml:"dynamicSQLPath"`       // dynamic sql file path
 }
 
 // YamlConfig is yaml config struct
@@ -124,6 +126,8 @@ func argParse() *CmdParams {
 	fieldWithIndexTag := flag.Bool("fieldWithIndexTag", false, "generate field with gorm index tag")
 	fieldWithTypeTag := flag.Bool("fieldWithTypeTag", false, "generate field with gorm column type tag")
 	fieldSignable := flag.Bool("fieldSignable", false, "detect integer field's unsigned type, adjust generated data type")
+	dynamicSQLPath := flag.String("dynamicSQLPath", "", "dynamic sql file path")
+	dynamicInterfaceName := flag.String("dynamicSQLFile", "Querier", "dynamic sql interface name")
 	flag.Parse()
 	var cmdParse CmdParams
 	if *genPath != "" {
@@ -168,6 +172,12 @@ func argParse() *CmdParams {
 	if *fieldSignable {
 		cmdParse.FieldSignable = *fieldSignable
 	}
+	if *dynamicInterfaceName != "" {
+		cmdParse.DynamicInterfaceName = *dynamicInterfaceName
+	}
+	if *dynamicSQLPath != "" {
+		cmdParse.DynamicSQLPath = *dynamicSQLPath
+	}
 	return &cmdParse
 }
 
@@ -196,10 +206,6 @@ func main() {
 	// set tinyint type
 	dataMap := map[string]func(detailType string) (dataType string){
 		"tinyint": func(detailType string) (dataType string) {
-			// dataType = "int8"
-			// if strings.Contains(detailType, "unsigned") {
-			// 	dataType = "uint8"
-			// }
 			return "int8"
 		},
 	}
@@ -214,6 +220,10 @@ func main() {
 
 	if !config.OnlyModel {
 		g.ApplyBasic(models...)
+	}
+
+	if config.DynamicSQLPath != "" {
+		g.ApplyInterface([]string{config.DynamicSQLPath, config.DynamicInterfaceName}, models...)
 	}
 
 	g.Execute()
