@@ -1,14 +1,17 @@
 # sqlgen
-通过sql 生成 数据裤操作接口
+根据数据库表信息生成结构体和基础操作方法，是 `gorm.io/gen` 包的增强包；
+在 `gorm.io/gen` 的基础上添加了如下功能
+[x] 代码生成命令行工具 支持动态语句
+[ ] 支持模型分表逻辑
 
 # 安装
 go install github.com/go-leo/sqlgen@latest
 
 # 使用
 ```
-gentool -h
+sqlgen -h
 
-Usage of gentool:
+Usage of sqlgen:
  -db string
        input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html] (default "mysql")
  -dsn string
