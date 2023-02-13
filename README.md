@@ -7,7 +7,7 @@
 
 
 # 安装
-go install github.com/go-leo/sqlgen@latest
+go install github.com/go-leo/sqlgen/tools/sqlgen@latest
 
 # 使用
 
