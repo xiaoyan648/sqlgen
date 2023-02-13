@@ -130,10 +130,15 @@ func argParse() *CmdParams {
 	dynamicInterfaceName := flag.String("dynamicSQLFile", "Querier", "dynamic sql interface name")
 	flag.Parse()
 	var cmdParse CmdParams
+	fmt.Printf("*genPath: %s \n", *genPath)
 	if *genPath != "" {
 		if configFileParams, err := loadConfigFile(*genPath); err == nil && configFileParams != nil {
 			cmdParse = *configFileParams
+			fmt.Printf("err: %v *genPath: %s \n", err, *genPath)
+		} else {
+			fmt.Printf("err: %v *genPath: %s \n", err, *genPath)
 		}
+
 	}
 	// cmd first
 	if *dsn != "" {

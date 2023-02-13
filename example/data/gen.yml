@@ -1,32 +1,30 @@
 version: "0.1"
 database:
   # consult[https://gorm.io/docs/connecting_to_the_database.html]"
-  dsn : "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:123456@tcp(localhost:3306)/user?charset=utf8mb4&parseTime=True&loc=Local"
   # input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html]
-  db  : "mysql"
+  db: "mysql"
   # enter the required data table or leave it blank.You can input : 
-  # tables  : 
-  #   - orders
-  #   - users
-  #   - goods
-  tables  :
+  tables: 
+    - user_feedback
+    - feedback_message
   # specify a directory for output
-  outPath :  "./dao/query"
+  outPath:  "./query"
   # query code file name, default: gen.go
-  outFile :  ""
+  outFile:  ""
   # dynamic sql file path
   dynamicSQLPath: ""
   # dynamic sql interface name, default: Querier
   dynamicInterfaceName: ""
   # generate unit test for query code
-  withUnitTest  : false
+  withUnitTest: false
   # generated model code's package name
-  modelPkgName  : ""
+  modelPkgName: "./entity"
   # generate with pointer when field is nullable
-  fieldNullable : false
+  fieldNullable: false
   # generate field with gorm index tag
-  fieldWithIndexTag : false
+  fieldWithIndexTag: false
   # generate field with gorm column type tag
-  fieldWithTypeTag  : false
+  fieldWithTypeTag: false
   # detect integer field's unsigned type, adjust generated data type
-  fieldSignable  : false
+  fieldSignable: false

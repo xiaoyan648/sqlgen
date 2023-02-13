@@ -37,17 +37,18 @@ func GetQueryStructMeta(db *gorm.DB, conf *model.Config) (*QueryStructMeta, erro
 	}
 
 	return (&QueryStructMeta{
-		db:              db,
-		Source:          model.Table,
-		Generated:       true,
-		FileName:        fileName,
-		TableName:       tableName,
-		ModelStructName: structName,
-		QueryStructName: uncaptialize(structName),
-		S:               strings.ToLower(structName[0:1]),
-		StructInfo:      parser.Param{Type: structName, Package: conf.ModelPkg},
-		ImportPkgPaths:  conf.ImportPkgPaths,
-		Fields:          getFields(db, conf, columns),
+		db:                      db,
+		Source:                  model.Table,
+		Generated:               true,
+		FileName:                fileName,
+		TableName:               tableName,
+		ModelStructName:         structName,
+		InternalModelStructName: uncaptialize(structName),
+		QueryStructName:         uncaptialize(structName),
+		S:                       strings.ToLower(structName[0:1]),
+		StructInfo:              parser.Param{Type: structName, Package: conf.ModelPkg},
+		ImportPkgPaths:          conf.ImportPkgPaths,
+		Fields:                  getFields(db, conf, columns),
 	}).addMethodFromAddMethodOpt(conf.GetModelMethods()...), nil
 }
 
@@ -133,12 +134,13 @@ func ConvertStructs(db *gorm.DB, structs ...interface{}) (metas []*QueryStructMe
 		}
 
 		meta := &QueryStructMeta{
-			S:               getPureName(name),
-			ModelStructName: name,
-			QueryStructName: uncaptialize(newStructName),
-			StructInfo:      parser.Param{PkgPath: structType.PkgPath(), Type: name, Package: getPackageName(structType.String())},
-			Source:          model.Struct,
-			db:              db,
+			S:                       getPureName(name),
+			ModelStructName:         name,
+			InternalModelStructName: uncaptialize(name),
+			QueryStructName:         uncaptialize(newStructName),
+			StructInfo:              parser.Param{PkgPath: structType.PkgPath(), Type: name, Package: getPackageName(structType.String())},
+			Source:                  model.Struct,
+			db:                      db,
 		}
 		if err := meta.parseStruct(st); err != nil {
 			return nil, fmt.Errorf("transform struct [%s.%s] error:%s", meta.StructInfo.Package, name, err)

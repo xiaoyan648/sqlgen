@@ -24,7 +24,7 @@ func Use(db *gorm.DB, opts ...sqlgen.DOOption) *Query {
 	return &Query{
 		db: db,
 		{{range $name,$d :=.Data -}}
-		{{$d.ModelStructName}}: new{{$d.ModelStructName}}(db,opts...),
+		{{$d.InternalModelStructName}}: new{{$d.ModelStructName}}(db,opts...),
 		{{end -}}
 	}
 }
@@ -33,7 +33,7 @@ type Query struct{
 	db *gorm.DB
 
 	{{range $name,$d :=.Data -}}
-	{{$d.ModelStructName}} {{$d.QueryStructName}}
+	{{$d.InternalModelStructName}} {{$d.QueryStructName}}
 	{{end}}
 }
 
@@ -43,7 +43,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db: db,
 		{{range $name,$d :=.Data -}}
-		{{$d.ModelStructName}}: q.{{$d.ModelStructName}}.clone(db),
+		{{$d.InternalModelStructName}}: q.{{$d.InternalModelStructName}}.clone(db),
 		{{end}}
 	}
 }
@@ -60,23 +60,56 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db: db,
 		{{range $name,$d :=.Data -}}
-		{{$d.ModelStructName}}: q.{{$d.ModelStructName}}.replaceDB(db),
+		{{$d.InternalModelStructName}}: q.{{$d.InternalModelStructName}}.replaceDB(db),
 		{{end}}
 	}
 }
 
-type queryCtx struct{ 
+type queryInstance struct {
+	{{range $name,$d :=.Data -}}
+	{{$d.ModelStructName}} {{$d.QueryStructName}}
+	{{end}}
+}
+
+func (q *Query) Instance(ctx context.Context) *queryInstance {
+	tx, ok := ctx.Value(contextTxKey{}).(*gorm.DB)
+    if ok {
+		new := q.clone(tx)
+		return &queryInstance{
+			{{range $name,$d :=.Data -}}
+			{{$d.ModelStructName}}: new.{{$d.InternalModelStructName}},
+			{{end}}
+		}
+    }
+	return &queryInstance{
+		{{range $name,$d :=.Data -}}
+		{{$d.ModelStructName}}: q.{{$d.InternalModelStructName}},
+		{{end}}
+	}
+}
+
+type queryDo struct{ 
 	{{range $name,$d :=.Data -}}
 	{{$d.ModelStructName}} {{$d.ReturnObject}}
 	{{end}}
 }
 
-func (q *Query) WithContext(ctx context.Context) *queryCtx  {
-	return &queryCtx{
+func (q *queryInstance) WithContext(ctx context.Context) *queryDo  {
+	return &queryDo{
 		{{range $name,$d :=.Data -}}
 		{{$d.ModelStructName}}: q.{{$d.ModelStructName}}.WithContext(ctx),
 		{{end}}
 	}
+}
+
+// 用来承载事务的上下文
+type contextTxKey struct{}
+
+func (q *Query) ExecTx(ctx context.Context, f func(ctx context.Context) error) error {
+	return q.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		ctx := context.WithValue(ctx, contextTxKey{}, tx)
+		return f(ctx) 
+	})
 }
 
 func (q *Query) Transaction(fc func(tx *Query) error, opts ...*sql.TxOptions) error {
