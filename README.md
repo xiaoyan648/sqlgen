@@ -2,14 +2,20 @@
 根据数据库表信息生成结构体和基础操作方法，是 `gorm.io/gen` 包的增强包；
 在 `gorm.io/gen` 的基础上添加了如下功能
 
-[x] 代码生成命令行工具 支持动态语句
+- [x] 代码生成命令行工具 支持动态语句
+- [x] 支持外部事务
 
-[ ] 支持模型分表逻辑
 
 # 安装
 go install github.com/go-leo/sqlgen@latest
 
 # 使用
+
+## 案例
+参考 `./example`
+
+
+## 更多
 ```
 sqlgen -h
 
@@ -30,7 +36,6 @@ Usage of sqlgen:
        query code file name, default: gen.go
  -outPath string
        specify a directory for output (default "./dao/query")
- -
  -tables string
        enter the required data table or leave it blank
  -onlyModel
@@ -49,6 +54,4 @@ Usage of sqlgen:
 # TODO
 
 - json tag 支持开关控制
-- 不再生成 model.TableName() string; 由使用者自己实现。
-  - 如果不实现，则使用读取数据库表名
-  - 如果实现，则使用TableName() (string, error) 返回值做表名(shardingkey缺失报错)
+- 支持模型分表逻辑

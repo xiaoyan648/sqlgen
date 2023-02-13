@@ -9,7 +9,7 @@ database:
     - user_feedback
     - feedback_message
   # specify a directory for output
-  outPath:  "./query"
+  outPath:  "./data/query"
   # query code file name, default: gen.go
   outFile:  ""
   # dynamic sql file path
@@ -19,7 +19,7 @@ database:
   # generate unit test for query code
   withUnitTest: false
   # generated model code's package name
-  modelPkgName: "./entity"
+  modelPkgName: "./data/entity"
   # generate with pointer when field is nullable
   fieldNullable: false
   # generate field with gorm index tag
